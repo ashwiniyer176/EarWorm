@@ -1,4 +1,3 @@
-# %%
 from scipy.io import wavfile
 from scipy.signal import spectrogram
 import numpy as np
@@ -54,7 +53,9 @@ class RecommendationEngine:
             (numpy.ndarray): A (1,39) shaped numpy array containing mean MFCC features
         """
         samplerate, audio = wavfile.read(audio_file_path)
-        print(audio.shape)
+        if np.count_nonzero(audio) > 1600000:
+            print("Audio is unkown(probably not music")
+            return None
         mfcc_features = self.convert_to_mfcc(audio)
         return mfcc_features
 
@@ -122,6 +123,9 @@ class RecommendationEngine:
             .iloc[: numberOfSongs + 1, :]
         )
 
+    def check_input(self, filepath):
+        assert os.path.splitext()[-1] in [".wav", ".mp3"]
+
     def predict(self, audio_file_path):
         """
         Given an audio file, recommends music
@@ -133,10 +137,13 @@ class RecommendationEngine:
             (pandas.DataFrame): Pandas DataFrame containing track name, artist and similarity score
         """
         mfcc_features = self.preprocess_input(audio_file_path)
-        audio_nn_feature_vector = np.array([mfcc_features])
-        audio_genre = np.argmax(self.audio_nn.predict(audio_nn_feature_vector))
-
-        return self.recommendSongs(songGenre=audio_genre)
+        # print(mfcc_features)
+        if mfcc_features is not None:
+            audio_nn_feature_vector = np.array([mfcc_features])
+            output = self.audio_nn.predict(audio_nn_feature_vector)
+            # print(output)
+            audio_genre = np.argmax(output)
+            return self.recommendSongs(songGenre=audio_genre)
 
 
 if __name__ == "__main__":
@@ -146,9 +153,23 @@ if __name__ == "__main__":
         "./models/Neural_Genre_Prediction/",
         "./data/scaled_music_metadata.csv",
     )
-
-    print("Predicting a new sample audio file")
+    print(
+        "===================================================================================="
+    )
+    print("Recommending based on file")
     print(model.predict("./Rock_Music.wav"))
+    print(
+        "===================================================================================="
+    )
 
     print("Recommending based on a known song")
     print(model.recommendSongs(trackName="Back in Black"))
+    print(
+        "===================================================================================="
+    )
+
+    print("Predicting based on Speech")
+    print(model.predict("./Trek Monologue.wav"))
+    print(
+        "===================================================================================="
+    )
