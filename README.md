@@ -1,45 +1,52 @@
-# Problem Statement 
-This should be a brief description of the domain of your dataset (e.g. if it is the Titanic Dataset then write about the ship, the incident that happened, what you're trying to do with the data). You can go check out the accompanying blog, [A Machine Learning Project Structure for Everyone!](https://medium.com/@ashwiniyer1706/a-machine-learning-project-structure-for-everyone-e48a81d0bb63)
+# EarWorm - An audio based Music Recommender
 
+EarWorm is a music recommendation engine that recommends music based on audio. You can upload advertisement jingles, movie themes and any kind of music audio file (.wav only for now) and EarWorm recommends music based on the audio clip.
 
 ## Dataset
 
-The dataset used is the [Name of the Dataset](Download link) from (source of download e.g Kaggle). If the task is a classification task, then you must specify the number of classes and give a 1 line description of each class as follows(example of Iris Dataset). 
+The dataset used is the [GTZAN Dataset for Music Genre Classification](https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification) from Kaggle. The task is a classification task, with 9 classes:
 
-The 3 class labels are:
-<br>
+    1. Blues
+    2. Classical
+    3. Country
+    4. Disco
+    5. Hip-Hop
+    6. Metal
+    7. Pop
+    8. Reggae
+    9. Rock
 
-**1. Iris Setosa:** Given iris flower belongs to the Setosa species
-<br>
-**2. Iris Virginica:** Given iris flower belongs to the Virginica species
-<br>
-**3. Iris Versicolor:** Given iris flower belongs to the Versicolor species
+## Stack
 
-If the task is a regression task, then explain the target variable and give brief statistics.(e.g. Housing Prices)
+**Audio:** I have used scipy to read and parse .wav files. Librosa and soundfile were used for feature extraction of .wav file to MFCCs.
 
-**Target Variable: SalePrice**
-<br>
-<br>
-Sale Price refers to the selling price of the house.
-<br>
-**Mean Selling Price:** 121,000$
-<br>
-**Max Selling Price:** 1,000,000$
-<br>
-**Min Selling Price:** 45,000$
+**Neural Network**: I used Tensorflow 2.0 for the purpose of Neural Network creation and training.
 
+**Web Application:** For the purpose of creating a web application, I have used Django 3.0 on the backend.
 
-## Model(s) Used
+## Usage:
 
-This needs to be a description of the model used and a brief overview of how it works in theory (e.g taken of a CNN Model): 
+1. Download [GTZAN Dataset for Music Genre Classification](https://www.kaggle.com/datasets/andradaolteanu/gtzan-dataset-music-genre-classification) and save it in `PROJECT_ROOT/data/`
 
-The network architecture used was a basic CNN model, with Max Pooling and ReLU Activation functions. Input images are resized to an optimal size and then fed into the **Convolutional layer**. These images are converted to their pixel values, which can be imagined as a three-dimensional matrix for the purpose of visualization. The **Convolutional layer** has a kernel. This kernel is generally a small matrix of specified kernel size mxnx3 (3 for RGB images). 
-<br>
+2. Run `recognition/notebooks/Dataset Creation.ipynb` to create `data/Song_Data_MFCC.csv`.
 
-**Rectified Linear Unit (ReLU)** is the activation layer used in CNNs.The activation function is applied to increase non-linearity in the CNN. Images are made of different objects that are not linear to each other.
+3. Create `PROJECT_ROOT/models`
 
+4. Run `recognition/notebooks/Data Cleaning.ipynb` to create `recognition/input` folder.
 
-**Max Pooling:** A limitation of the feature map output of Convolutional Layers is that they record the precise position of features in the input. This means that small movements in the position of the feature in the input image will result in a different feature map. This can happen with re-cropping, rotation, shifting, and other minor changes to the input image. A common approach to addressing this problem from signal processing is called down sampling. This is where a lower resolution version of an input signal is created that still contains the large or important structural elements, without the fine detail that may not be as useful to the task.
+5. Create `PROJECT_ROOT/.env`. Add the line SECRET_KEY="<some_random_set_of_characters>"
+
+6. Run the following set of commands to get Django running
+
+```
+    python manage.py makemigrations
+    python manage.py migrate
+    python manage.py runserver
+```
+
+6. Go to http://127.0.0.1:8000/. Upload your file and you will get your prediction.
+
+**NOTE:** To check if the files are being uploaded properly, check if your root directory contains a `media/documents` directory. This is where files get saved.
 
 ## Future Work
 Good ideas or strategies that you were not able to implement which you think can help  improve performance.
