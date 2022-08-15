@@ -1,12 +1,23 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Recognition</title>
-</head>
-<body>
-    Hello to Music Recognizer
-</body>
-</html>
+{% extends 'recognition/base.html' %}
+
+{% block content %}
+    {% if form %}
+    <form action="{% url 'index' %}" method = "post" enctype="multipart/form-data"> 
+        {% csrf_token %} 
+        {{ form }} 
+        <button type="submit">Upload</button> 
+    </form>
+    {% endif %}
+
+    {% if audio_files %}
+        <ol>
+            {% for a in audio_files %}
+                <li>
+                    {{a}}
+                </li>
+            {% endfor %}
+        </ol>
+
+    {% endif %}
+{% endblock content %}
+
