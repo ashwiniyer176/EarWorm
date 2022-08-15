@@ -1,0 +1,13 @@
+label_encodings:
+  genre:
+    {
+      "blues": 0,
+      "classical": 1,
+      "country": 2,
+      "disco": 3,
+      "hiphop": 4,
+      "metal": 5,
+      "pop": 6,
+      "reggae": 7,
+      "rock": 8,
+    }
